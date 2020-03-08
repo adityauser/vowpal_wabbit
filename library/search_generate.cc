@@ -3,7 +3,6 @@
 #include <iostream>
 #include <fstream>
 #include <string>
-#include <algorithm>
 #include <vector>
 #include "../vowpalwabbit/vw.h"
 #include "../vowpalwabbit/ezexample.h"
@@ -216,14 +215,11 @@ typedef std::string output;
 float max_cost = 100.;
 
 float get_or_one(std::vector<std::pair<char,size_t> >& v, char c)
-{
-pair<char,size_t> p1 = {c, 0};
-int x = lower_bound(v.begin(), v.end(), p1) - v.begin();
-if(x == v.size())
-    return 1;
-if(v[x].first == c)
-    return minf(max_cost, (float)v[x].second);
-return 1;
+{ // TODO: could binary search
+  for (auto& p : v)
+    if (p.first == c)
+      return minf(max_cost, (float)p.second);
+  return 1.;
 }
 
 class Generator : public SearchTask<input, output>
